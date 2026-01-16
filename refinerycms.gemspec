@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.platform          = Gem::Platform::RUBY
   s.name              = 'refinerycms'
   s.version           = version
-  s.description       = "A CMS for Ruby on Rails, supporting Rails 6+. It's developer friendly and easy to extend."
-  s.summary           = 'A CMS for Ruby on Rails, supporting Rails 6+'
+  s.description       = "A CMS for Ruby on Rails, supporting Rails 6.1+. It's developer friendly and easy to extend."
+  s.summary           = 'A CMS for Ruby on Rails, supporting Rails 6.1+'
   s.email             = 'gems@p.arndt.io'
   s.homepage          = 'https://www.refinerycms.com'
   s.authors           = ['Philip Arndt', 'David Jones', 'Uģis Ozols', 'Brice Sanchez']
@@ -24,6 +24,8 @@ Gem::Specification.new do |s|
   s.add_dependency    'refinerycms-images',         version
   s.add_dependency    'refinerycms-pages',          version
   s.add_dependency    'refinerycms-resources',      version
+
+  s.add_development_dependency 'rspec-rails'
   s.required_ruby_version = Refinery::Version.required_ruby_version
 
   s.cert_chain = [File.expand_path('certs/parndt.pem', __dir__)]

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 module Refinery
-  describe "site bar", :type => :system do
+  describe "site bar", type: :system do
     refinery_login
 
     describe "logout link" do
@@ -10,10 +12,10 @@ module Refinery
       context "when set" do
         before do
           allow(Refinery::Core).to receive(:refinery_logout_path).and_return(logout_path)
-          visit Refinery::Core.backend_path
         end
 
         it "is present" do
+          visit Refinery::Core.backend_path
           expect(page).to have_selector("a[href='#{logout_path}']")
           expect(page).to have_content("Log out")
         end
@@ -62,7 +64,7 @@ module Refinery
       end
 
       it "has an 'edit this page' button" do
-        expect(page).to have_link("Edit this page", :href => refinery.edit_admin_page_path(root_page))
+        expect(page).to have_link("Edit this page", href: refinery.edit_admin_page_path(root_page))
       end
 
     end

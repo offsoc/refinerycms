@@ -7,18 +7,10 @@ ENGINE_RAILS_ROOT = File.join(File.dirname(__FILE__), '../') unless defined?(ENG
 # Configure Rails Environment
 ENV["RAILS_ENV"] ||= 'test'
 
-if ENV['TRAVIS']
-  require 'coveralls'
-  Coveralls.wear!
-end
-
 require File.expand_path("../dummy/config/environment", __FILE__)
 
+require 'rack/test'
 require 'rspec/rails'
-require 'capybara/rspec'
-require 'webdrivers/chromedriver'
-require 'falcon/capybara'
-Capybara.server = :falcon
 
 if ENV['RETRY_COUNT']
   require 'rspec/retry'
@@ -41,6 +33,7 @@ RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
   config.include ActionView::TestCase::Behavior, :file_path => %r{spec/presenters}
   config.infer_spec_type_from_file_location!
+  # config.raise_errors_for_deprecations!
 
   config.use_transactional_fixtures = true
 
@@ -58,11 +51,11 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :system) do
-    driven_by :rack_test
+    driven_by :selenium_chrome_headless
   end
 
   config.before(:each, type: :system, js: true) do
-    driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1080]
+    driven_by :selenium_chrome_headless, using: :headless_chrome, screen_size: [1400, 1080]
   end
 
   unless ENV['FULL_BACKTRACE']

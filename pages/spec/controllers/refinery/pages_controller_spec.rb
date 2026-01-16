@@ -3,13 +3,13 @@ require "spec_helper"
 module Refinery
   describe PagesController, :type => :controller do
     before do
-      FactoryBot.create(:page, link_url:  "/")
+      FactoryBot.create(:page, { link_url: "/" })
       FactoryBot.create(:page, title:  "testing")
       FactoryBot.create(:page, link_url: "/items")
     end
 
     describe "#home" do
-      context "when page path set to default ('/') " do
+      context "when page path set to default ('/')" do
         it "renders home template" do
           get :home
           expect(response).to render_template("home")

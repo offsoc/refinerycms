@@ -10,11 +10,11 @@ jobs:
   test:
     strategy:
       matrix:
-        database: [ mysql, postgresql ]
+        database: [ sqlite3, mysql, postgresql ]
         extension: [ core, dragonfly, images, pages, resources ]
-        ruby: [ 2.7, 2.6 ]
+        ruby: [ 4.0, 3.4, 3.3, 3.2  ]
+        rails: [ '~> 8.1.0', '~> 8.0.0', '~> 7.2.0' ]
       fail-fast: false
-      max-parallel: 20
     runs-on: ubuntu-latest
 
     env:
@@ -25,16 +25,21 @@ jobs:
       PGPASSWORD: runner
       PGUSER: runner
       RAILS_ENV: test
+      RAILS_VERSION: ${{ matrix.rails }}
       RETRY_COUNT: 3
 
-    name: ${{ matrix.extension }} ${{ matrix.ruby }} ${{ matrix.database }}
+    name: rails ${{ matrix.rails }} ruby ${{ matrix.ruby }} refinerycms-${{ matrix.extension }} ${{ matrix.database }}
     steps:
       - run: sudo apt-get update && sudo apt-get install libsqlite3-dev -y
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
           ruby-version: ${{ matrix.ruby }}
+
+      - name: "Install ImageMagick for images extension"
+        if: ${{ matrix.extension == 'images' }}
+        run: sudo apt-get install imagemagick -y
 
       - name: "Set up MySQL using VM's server"
         if: ${{ env.DB == 'mysql' }}
@@ -50,4 +55,6 @@ jobs:
           sudo -u postgres psql -c "CREATE USER runner WITH SUPERUSER PASSWORD 'runner'"
 
       - run: bin/rake refinery:testing:dummy_app
+      - run: cd spec/dummy && bin/rails assets:precompile
+        if: ${{ matrix.rails == '~> 8.1.0' }}
       - run: bin/rspec ${{ matrix.extension }}/spec
